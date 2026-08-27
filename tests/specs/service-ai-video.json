@@ -5,9 +5,9 @@
       {
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Show AI video service description"
+              "text": "AI-видео для запусков, рекламы и социальных сетей.\n\nПревратим идею бренда в динамичный ролик, который удерживает внимание."
             }
           }
         ],

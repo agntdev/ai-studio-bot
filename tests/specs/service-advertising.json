@@ -5,9 +5,9 @@
       {
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Show advertising service description"
+              "text": "Рекламные креативы, созданные под задачу бренда.\n\nПоможем сформулировать идею и подготовим контент для вашей кампании."
             }
           }
         ],

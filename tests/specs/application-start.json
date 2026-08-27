@@ -1,20 +1,37 @@
 [
   {
-    "name": "📝 Оставить заявку",
+    "name": "application form collects every required field",
     "steps": [
       {
-        "expect": [
-          {
-            "method": "sendMessage",
-            "payload": {
-              "text": "Begin application form"
-            }
-          }
-        ],
-        "send": {
-          "callback": "application:start"
-        }
+        "send": { "callback": "application:start" },
+        "expect": [{ "method": "editMessageText", "payload": { "text": "Выберите услугу — подготовим предложение под вашу задачу." } }]
+      },
+      {
+        "send": { "callback": "application:service:photo" },
+        "expect": [{ "method": "editMessageText", "payload": { "text": "Опишите задачу: цель, формат и желаемый результат.\n\nМожно прикрепить фото, видео или документ с подписью." } }]
+      },
+      {
+        "send": { "text": "Нужны изображения новой коллекции для запуска в соцсетях" },
+        "expect": [{ "method": "sendMessage", "payload": { "text": "У вас есть готовые материалы для проекта?" } }]
+      },
+      {
+        "send": { "callback": "application:materials:no" },
+        "expect": [{ "method": "sendMessage", "payload": { "text": "Напишите контакт одним сообщением." } }]
+      },
+      {
+        "send": { "text": "@brand_manager" },
+        "expect": [{ "method": "sendMessage", "payload": { "text": "Приём заявок пока не настроен. Попробуйте позже или вернитесь в меню." } }]
       }
+    ]
+  },
+  {
+    "name": "application requires a usable contact",
+    "steps": [
+      { "send": { "callback": "application:start" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "callback": "application:service:video" }, "expect": [{ "method": "editMessageText" }] },
+      { "send": { "text": "Нужен ролик для презентации нового продукта" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "callback": "application:materials:yes" }, "expect": [{ "method": "sendMessage" }] },
+      { "send": { "text": "нет" }, "expect": [{ "method": "sendMessage", "payload": { "text": "Укажите телефон или @username, чтобы менеджер мог с вами связаться." } }] }
     ]
   }
 ]

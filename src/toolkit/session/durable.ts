@@ -51,6 +51,19 @@ interface Reminder {
   text: string;
 }
 
+/** A durable client brief. The global ChatDO keeps the explicit id index. */
+export interface StoredApplication {
+  id: string;
+  serviceType: string;
+  requirementsText: string;
+  hasMaterials: boolean;
+  contactInfo: string;
+  timestamp: string;
+  chatId: number;
+  attachments: Array<{ kind: string; messageId: number }>;
+  status: "new" | "in_progress" | "done";
+}
+
 /**
  * createDurableSessionStorage — a grammY StorageAdapter that routes each session
  * key to its own ChatDO instance. Pass to buildBot({ storage }) in the Worker.
@@ -152,6 +165,34 @@ export class ChatDO {
       await this.state.storage.put("reminders", list);
       await this.rearm(list);
       return new Response(null, { status: 204 });
+    }
+
+    // A single named instance ("applications") acts as a compact durable
+    // application ledger. It maintains an explicit index, never a key scan.
+    if (url.pathname === "/applications") {
+      const ids = (await this.state.storage.get<string[]>("application_ids")) ?? [];
+      if (request.method === "GET") {
+        const records = await Promise.all(
+          ids.map((id) => this.state.storage.get<StoredApplication>("application:" + id)),
+        );
+        return Response.json(records.filter((record): record is StoredApplication => record !== undefined));
+      }
+      if (request.method === "POST") {
+        const record = (await request.json()) as StoredApplication;
+        if (!ids.includes(record.id)) {
+          ids.push(record.id);
+          await this.state.storage.put("application_ids", ids);
+        }
+        await this.state.storage.put("application:" + record.id, record);
+        return Response.json({ ok: true });
+      }
+      if (request.method === "PATCH") {
+        const update = (await request.json()) as { id: string; status: StoredApplication["status"] };
+        const record = await this.state.storage.get<StoredApplication>("application:" + update.id);
+        if (!record) return new Response("not found", { status: 404 });
+        await this.state.storage.put("application:" + update.id, { ...record, status: update.status });
+        return Response.json({ ok: true });
+      }
     }
 
     return new Response("not found", { status: 404 });
