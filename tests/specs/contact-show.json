@@ -5,9 +5,9 @@
       {
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Show company contacts"
+              "text": "Расскажите о задаче в заявке — менеджер AI Studio свяжется с вами по удобному контакту."
             }
           }
         ],
