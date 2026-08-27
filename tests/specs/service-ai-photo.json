@@ -1,0 +1,20 @@
+[
+  {
+    "name": "📸 AI-фото",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Show AI photo service description"
+            }
+          }
+        ],
+        "send": {
+          "callback": "service:ai_photo"
+        }
+      }
+    ]
+  }
+]
