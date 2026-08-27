@@ -1,0 +1,20 @@
+[
+  {
+    "name": "📝 Оставить заявку",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Begin application form"
+            }
+          }
+        ],
+        "send": {
+          "callback": "application:start"
+        }
+      }
+    ]
+  }
+]
